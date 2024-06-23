@@ -1,0 +1,63 @@
+---
+title: Wallet components & utilities types
+description: Glossary of Types.
+---
+
+# Types [Glossary of Types in Wallet components & utilities.]
+
+## `ConnectAccountReact`
+
+```ts
+type ConnectAccountReact = {
+  children?: React.ReactNode; // Children can be utilized to display customized content when the wallet is connected
+};
+```
+
+## `IsValidAAEntrypointOptions`
+
+```ts
+export type IsValidAAEntrypointOptions = {
+  entrypoint: string;
+};
+```
+
+## `IsWalletACoinbaseSmartWalletOptions`
+
+```ts
+export type IsWalletACoinbaseSmartWalletOptions = {
+  client: PublicClient;
+  userOp: UserOperation<'v0.6'>;
+};
+```
+
+## `IsWalletACoinbaseSmartWalletResponse`
+
+```ts
+export type IsWalletACoinbaseSmartWalletResponse =
+  | { isCoinbaseSmartWallet: true }
+  | { isCoinbaseSmartWallet: false; error: string; code: string };
+```
+
+## `WalletContextType`
+
+```ts
+type WalletContextType = {
+  address?: Address | null; // The Ethereum address to fetch the avatar and name for.
+};
+```
+
+## `WalletReact`
+
+```ts
+type WalletReact = {
+  children: React.ReactNode;
+};
+```
+
+## `WalletDropdownReact`
+
+```ts
+type WalletDropdownReact = {
+  children: React.ReactNode;
+};
+```

@@ -1,0 +1,145 @@
+---
+title: Swap components & utilities Types
+description: Glossary of Types in Swap components & utilities.
+---
+
+# Types [Glossary of Types in Swap components & utilities.]
+
+## `BuildSwapTransaction`
+
+```ts
+type BuildSwapTransaction = {
+  approveTransaction?: Transaction; // The approval transaction (https://metaschool.so/articles/what-are-erc20-approve-erc20-allowance-methods/)
+  fee: Fee; // The fee for the swap
+  quote: SwapQuote; // The quote for the swap
+  transaction: Transaction; // The object developers should pass into Wagmi's signTransaction
+  warning?: QuoteWarning; // The warning associated with the swap
+};
+```
+
+## `BuildSwapTransactionResponse`
+
+```ts
+type BuildSwapTransactionResponse = BuildSwapTransaction | SwapError;
+```
+
+## `BuildSwapTransactionParams`
+
+```ts
+type BuildSwapTransactionParams = {
+  fromAddress: Address; // The address of the user
+  from: Token; // The source token for the swap
+  to: Token; // The destination token for the swap
+  amount: string; // The amount to be swapped
+  amountReference?: string; // The reference amount for the swap
+  isAmountInDecimals?: boolean; // Whether the amount is in decimals
+};
+```
+
+## `Fee`
+
+```ts
+type Fee = {
+  amount: string; // The amount of the fee
+  baseAsset: Token; // The base asset for the fee
+  percentage: string; // The percentage of the fee
+};
+```
+
+## `GetSwapQuoteParams`
+
+```ts
+export type GetSwapQuoteParams = {
+  from: Token; // The source token for the swap
+  to: Token; // The destination token for the swap
+  amount: string; // The amount to be swapped
+  amountReference?: string; // The reference amount for the swap
+  isAmountInDecimals?: boolean; // Whether the amount is in decimals
+};
+```
+
+## `GetSwapQuoteResponse`
+
+```ts
+export type GetSwapQuoteResponse = SwapQuote | SwapError;
+```
+
+## `QuoteWarning`
+```ts
+type QuoteWarning = {
+  description?: string; // The description of the warning
+  message?: string; // The message of the warning
+  type?: string; // The type of the warning
+};
+```
+
+## `SwapAmountInputReact`
+
+```ts
+type SwapAmountInputReact = {
+  delayMs?: number; // The debounce delay in milliseconds
+  label: string; // Descriptive label for the input field
+  swappableTokens?: Token[];  // Swappable tokens
+  token: Token; // Selected token
+  type: 'to' | 'from'; // Identifies if component is for toToken or fromToken
+};
+```
+
+## `SwapButtonReact`
+
+```ts
+type SwapButtonReact = {
+  disabled?: boolean; // Disables swap button
+  onSubmit?: (swapTransaction: BuildSwapTransaction) => void; // Callback to submit Swap
+};
+```
+
+## `SwapError`
+
+```ts
+type SwapError = {
+  code: string; // The error code
+  error: string; // The error message
+};
+```
+
+## `SwapQuote`
+
+```ts
+type SwapQuote = {
+  amountReference: string; // The reference amount for the quote
+  from: Token; // The source token for the swap
+  fromAmount: string; // The amount of the source token
+  hasHighPriceImpact: boolean; // Whether the price impact is high
+  priceImpact: string; // The price impact of the swap
+  slippage: string; // The slippage of the swap
+  to: Token; // The destination token for the swap
+  toAmount: string; // The amount of the destination token
+  warning?: QuoteWarning; // The warning associated with the quote
+};
+```
+
+## `SwapReact`
+
+```ts
+type SwapReact = {
+  address: Address; // Connected address from connector.
+  children: ReactNode; // Children components to render
+  title?: string; // Title for the Swap component. (default: "Swap")
+};
+```
+
+## `Transaction`
+
+```ts
+type Transaction = {
+  chainId: number; // The chain ID
+  data: Hex; // The data for the transaction
+  gas: bigint; // The gas limit
+  maxFeePerGas?: bigint | undefined; // The maximum fee per gas
+  maxPriorityFeePerGas?: bigint | undefined; // The maximum priority fee per gas
+  nonce?: number; // The nonce for the transaction
+  to: Address; // The recipient address
+  value: bigint; // The value of the transaction
+};
+```

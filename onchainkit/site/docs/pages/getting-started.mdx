@@ -1,0 +1,141 @@
+# Getting Started
+
+OnchainKit is the easiest way for ANY developer to build beautiful onchain applications.
+
+You can use OnchainKit in an existing project, by installing OnchainKit as a dependency.
+
+::::steps
+
+### Install
+
+Let's install OnchainKit as a dependency along with its Viem peer dependency.
+
+:::code-group
+
+```bash [npm]
+npm install @coinbase/onchainkit
+```
+
+```bash [yarn]
+yarn add @coinbase/onchainkit
+```
+
+```bash [pnpm]
+pnpm add @coinbase/onchainkit
+```
+
+```bash [bun]
+bun add @coinbase/onchainkit
+```
+
+:::
+
+### Configure the OnchainKitProvider
+
+The `<OnchainKitProvider />` component equips your app with the essential context to interact with OnchainKit components and utilities.
+
+Set the `chain` prop to your target chain and provide the API KEY to access the embedded APIs.
+
+```tsx [code]
+'use client';
+import { ReactNode } from 'react';
+import { base } from 'viem/chains';
+import { OnchainKitProvider } from '@coinbase/onchainkit';
+
+type Props = { children: ReactNode };
+
+function OnchainProviders({ children }: Props) {
+  return (
+    <OnchainKitProvider apiKey="YOUR_PUBLIC_API_KEY" chain={base}>
+      <YourKit />
+    </OnchainKitProvider>
+  );
+};
+
+export default OnchainProviders;
+```
+
+Obtain an API key from the [Coinbase Developer Platform APIs](https://portal.cdp.coinbase.com/products/onchainkit).
+
+<img
+  alt="OnchainKit copy API KEY"
+  src="https://onchainkit.xyz/assets/copy-api-key-guide.png"
+  width="auto"
+/>
+
+### Configure the WagmiProvider
+
+Many of OnchainKit's components require a WagmiProvider to access Wagmi utilities.
+
+If your application already includes these settings, you can skip this step.
+
+:::code-group
+
+```tsx [OnchainProviders.tsx]
+'use client';
+import { ReactNode } from 'react';
+import { OnchainKitProvider } from '@coinbase/onchainkit';
+import { QueryClient, QueryClientProvider } from '@tanstack/react-query';
+import { base } from 'viem/chains';
+import { WagmiProvider } from 'wagmi';
+import { wagmiConfig } from './wagmi';
+
+type Props = { children: ReactNode };
+
+const queryClient = new QueryClient();
+
+function OnchainProviders({ children }: Props) {
+  return (
+    <WagmiProvider config={wagmiConfig}>
+      <QueryClientProvider client={queryClient}>
+        <OnchainKitProvider
+          apiKey={YOUR_PUBLIC_API_KEY}
+          chain={base}
+        >
+          {children}
+        </OnchainKitProvider>
+      </QueryClientProvider>
+    </WagmiProvider>
+  );
+}
+
+export default OnchainProviders;
+```
+
+```tsx [wagmi.ts]
+import { http, createConfig } from 'wagmi';
+import { base } from 'wagmi/chains';
+import { coinbaseWallet } from 'wagmi/connectors';
+
+export const wagmiConfig = createConfig({
+  chains: [base],
+  multiInjectedProviderDiscovery: false,
+  connectors: [
+    coinbaseWallet({
+      appName: 'yourAppName',
+      preference: 'all',
+      version: '4',
+    }),
+  ],
+  ssr: true,
+  transports: {
+    [base.id]: http(),
+  },
+});
+```
+
+:::
+
+### Style your components
+
+All OnchainKit components come pre-configured with a style.
+
+Simply place this at the top of your application's entry point to have the components working out of the box.
+
+```javascript
+import '@coinbase/onchainkit/styles.css';
+```
+
+For `tailwindcss` users, follow the [Tailwindcss Integration Guide](/guides/tailwind).
+
+::::

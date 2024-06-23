@@ -1,0 +1,277 @@
+import { ConnectAccount } from '@coinbase/onchainkit/wallet';
+import { Swap, SwapAmountInput, SwapButton, SwapMessage, SwapToggleButton } from '@coinbase/onchainkit/swap';
+import App from '../../components/App';
+import SwapWrapper from '../../components/SwapWrapper';
+
+# `<Swap />`
+
+:::warning
+Component is actively in development. Stay tuned for upcoming releases.
+:::
+
+The `Swap` components provide a comprehensive interface for users to execute [Token](/token/types#token) swaps.
+
+Before using them, ensure you've completed all [Getting Started steps](/getting-started).
+
+The components are designed to work together. For each component, ensure the following:
+- `<Swap />` - Set the user's address and error handling.
+- `<SwapAmountInput />` - Set the [Token](/token/types#token) to swap and specify the input type (`from` or `to`).
+- `<SwapToggleButton />` - Optional component to toggle between input types.
+- `<SwapMessage />` - Optional component that displays a message related to the swap operation's current state.
+- `<SwapButton />` - Set the onSubmit and onError callbacks.
+
+The `SwapButton` component prepares a swap transaction but does not submit it to the blockchain.
+You need to handle the transaction submission and confirmation in your application, as shown in the `onSubmit` code example.
+
+## Usage
+
+Example using `@coinbase/onchainkit/swap` and `@coinbase/onchainkit/wallet`.
+
+```tsx [code]
+import { useCallback } from 'react';
+import { ConnectAccount } from '@coinbase/onchainkit/wallet';
+import { // [!code focus]
+  Swap, // [!code focus]
+  SwapAmountInput, // [!code focus]
+  SwapToggleButton, // [!code focus]
+  SwapButton, // [!code focus]
+} from '@coinbase/onchainkit/swap'; // [!code focus]
+import { useAccount, sendTransaction } from 'wagmi';
+import type { // [!code focus]
+  BuildSwapTransaction, // [!code focus]
+  SwapError, // [!code focus]
+} from '@coinbase/onchainkit/swap'; // [!code focus]
+import type { Token } from '@coinbase/onchainkit/token';
+
+export default function SwapComponents() {
+  const { address } = useAccount();
+  const { sendTransaction } = useSendTransaction();
+
+  const ETHToken: Token = { ... };
+
+  const USDCToken: Token = { ... };
+
+  const swappableTokens: Token[] = [ ... ];
+
+  const onSubmit = useCallback((swapTransaction: BuildSwapTransaction) => {
+    const { transaction } = swapTransaction;
+    console.log('Prepared swapTransaction:', transaction);
+    // Transaction submission sample code
+    const result = await sendTransaction({
+      to: transaction.to,
+      value: transaction.value,
+      data: transaction.data,
+    });
+  }, [sendTransaction]);
+
+  return ({ address ? (
+    <Swap address={address}> // [!code focus]
+      <SwapAmountInput // [!code focus]
+        label="Sell" // [!code focus]
+        swappableTokens={swappableTokens} // [!code focus]
+        token={ETHToken} // [!code focus]
+        type="from" // [!code focus]
+      /> // [!code focus]
+      <SwapToggleButton /> // [!code focus]
+      <SwapAmountInput // [!code focus]
+        label="Buy" // [!code focus]
+        swappableTokens={swappableTokens} // [!code focus]
+        token={USDCToken} // [!code focus]
+        type="to" // [!code focus]
+      /> // [!code focus]
+      <SwapButton onSubmit={onSubmit} /> // [!code focus]
+      <SwapMessage /> // [!code focus]
+    </Swap> // [!code focus]
+  ) : (
+    <ConnectAccount />
+  )});
+}
+```
+
+<App>
+  <SwapWrapper>
+    {({ address, swappableTokens }) => {
+      if (address) {
+        return (
+          <Swap address={address}>
+            <SwapAmountInput
+              label="Sell"
+              swappableTokens={swappableTokens}
+              token={swappableTokens[1]}
+              type="from"
+            />
+            <SwapToggleButton />
+            <SwapAmountInput
+              label="Buy"
+              swappableTokens={swappableTokens}
+              token={swappableTokens[2]}
+              type="to"
+            />
+            <SwapButton />
+            <SwapMessage />
+          </Swap>
+        )
+      }
+      return <ConnectAccount />;
+    }}
+  </SwapWrapper>
+</App>
+
+:::danger
+**Note: This interface is for demonstration purposes only.**
+
+The swap will execute and work out of the box when you implement the component in your own app.
+:::
+
+You can adjust to only allow swap between a token pair.
+
+```tsx [code]
+// omitted for brevity
+
+<Swap address={address}> // [!code focus]
+  <SwapAmountInput // [!code focus]
+    label="Sell" // [!code focus]
+    token={ETHToken} // [!code focus]
+    type="from" // [!code focus]
+  /> // [!code focus]
+  <SwapToggleButton /> // [!code focus]
+  <SwapAmountInput // [!code focus]
+    label="Buy" // [!code focus]
+    token={USDCToken} // [!code focus]
+    type="to" // [!code focus]
+  /> // [!code focus]
+  <SwapButton onSubmit={onSubmit} /> // [!code focus]
+  <SwapMessage /> // [!code focus]
+</Swap> // [!code focus]
+}
+```
+
+<App>
+  <SwapWrapper>
+    {({ address, swappableTokens }) => {
+      if (address) {
+        return (
+          <Swap address={address}>
+            <SwapAmountInput
+              label="Sell"
+              token={swappableTokens[1]}
+              type="from"
+            />
+            <SwapToggleButton />
+            <SwapAmountInput
+              label="Buy"
+              token={swappableTokens[2]}
+              type="to"
+            />
+            <SwapButton disabled />
+            <SwapMessage />
+          </Swap>
+        )
+      }
+      return <ConnectAccount />;
+    }}
+  </SwapWrapper>
+</App>
+
+You can remove `SwapToggleButton` to make swap unidirectional.
+
+```tsx [code]
+// omitted for brevity
+
+<Swap address={address}> // [!code focus]
+  <SwapAmountInput // [!code focus]
+    label="Sell" // [!code focus]
+    token={ETHToken} // [!code focus]
+    type="from" // [!code focus]
+  /> // [!code focus]
+  <SwapAmountInput // [!code focus]
+    label="Buy" // [!code focus]
+    token={USDCToken} // [!code focus]
+    type="to" // [!code focus]
+  /> // [!code focus]
+  <SwapButton onSubmit={onSubmit} /> // [!code focus]
+  <SwapMessage /> // [!code focus]
+</Swap> // [!code focus]
+}
+```
+
+<App>
+  <SwapWrapper>
+    {({ address, swappableTokens }) => {
+      if (address) {
+        return (
+          <Swap address={address}>
+            <SwapAmountInput
+              label="Sell"
+              token={swappableTokens[1]}
+              type="from"
+            />
+            <SwapAmountInput
+              label="Buy"
+              token={swappableTokens[2]}
+              type="to"
+            />
+            <SwapButton disabled />
+            <SwapMessage />
+          </Swap>
+        )
+      }
+      return <ConnectAccount />;
+    }}
+  </SwapWrapper>
+</App>
+
+You can remove `SwapMessage` component.
+
+```tsx [code]
+// omitted for brevity
+
+<Swap address={address}> // [!code focus]
+  <SwapAmountInput // [!code focus]
+    label="Sell" // [!code focus]
+    token={ETHToken} // [!code focus]
+    type="from" // [!code focus]
+  /> // [!code focus]
+  <SwapToggleButton />
+  <SwapAmountInput // [!code focus]
+    label="Buy" // [!code focus]
+    token={USDCToken} // [!code focus]
+    type="to" // [!code focus]
+  /> // [!code focus]
+  <SwapButton onSubmit={onSubmit} /> // [!code focus]
+</Swap> // [!code focus]
+}
+```
+
+
+<App>
+  <SwapWrapper>
+    {({ address, swappableTokens }) => {
+      if (address) {
+        return (
+          <Swap address={address}>
+            <SwapAmountInput
+              label="Sell"
+              token={swappableTokens[1]}
+              type="from"
+            />
+            <SwapToggleButton />
+            <SwapAmountInput
+              label="Buy"
+              token={swappableTokens[2]}
+              type="to"
+            />
+            <SwapButton />
+          </Swap>
+        )
+      }
+      return <ConnectAccount />;
+    }}
+  </SwapWrapper>
+</App>
+## Props
+
+- [`SwapReact`](/swap/types#swapreact)
+- [`SwapAmountInput`](/swap/types#swapamountinput)
+- [`SwapToggleButton`](/swap/types#swaptogglebutton)
+- [`SwapButtonReact`](/swap/types#swapbuttonreact)

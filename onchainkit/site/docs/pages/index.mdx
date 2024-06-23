@@ -1,0 +1,353 @@
+---
+title: OnchainKit
+description: React components and TypeScript utilities for top-tier onchain apps.
+content:
+  width: 100%
+layout: landing
+showOutline: false
+---
+
+import { base } from 'viem/chains';
+import { OnchainKitProvider } from '@coinbase/onchainkit';
+import { Address, Avatar, Badge, Name, Identity } from '@coinbase/onchainkit/identity';
+import AccountConnect from '../components/AccountConnect';
+import App from '../components/App';
+import FarcasterCastCard from '../components/FarcasterCastCard';
+import TokenSelector from '../components/TokenSelector';
+
+<div id="blobs">
+  <div className="css-blurry-gradient top-['-15%',] left-['calc(50%_-_280px)']"/>
+  <div className="css-blurry-gradient top-[-15%] opacity-30 blur-[75px] left-[10%]" style={{
+    background: 'radial-gradient(circle at 50% 50%, #4F46E5, #4F46E5)',
+  }} />
+  <div className="css-blurry-gradient" style={{ top: '-15%', left: 'calc(50% + 280px)' }} />
+  <div className="css-blurry-gradient" style={{ top: '45%', left: '90%', height: '220px', width: '220px' }} />
+  <div className="css-blurry-gradient" style={{ top: '35%', left: '10%', height: '220px', width: '220px' }} />
+</div>
+
+<div className="max-w-screen-xl mx-auto vp-doc relative px-[24px] mb-[26px] mt-0 md:px-0 md:mb-[64px]">
+  <div className="mx-auto max-w-2xl">
+    <div className="md:text-center flex flex-col gap-8 pt-48 pb-16">
+      <h1 className="text-center text-6xl md:text-9xl font-medium no-underline dark:text-white tracking-[-0.1rem]">OnchainKit</h1>
+      <div className="text-center text-xl md:text-3xl dark:text-white">
+        <p className="leading-7 md:leading-none">
+          React components and TypeScript utilities to help you build top-tier onchain apps.
+        </p>
+      </div>
+    </div>
+    <div className="flex flex-col md:flex-row space-between items-center gap-6 w-full">
+      <div id="home-install" className="h-full grow">
+:::code-group
+
+```bash [npm]
+npm install @coinbase/onchainkit
+```
+
+```bash [yarn]
+yarn add @coinbase/onchainkit
+```
+
+```bash [pnpm]
+pnpm add @coinbase/onchainkit
+```
+
+```bash [bun]
+bun add @coinbase/onchainkit
+```
+
+:::
+
+      </div>
+      <a href="/getting-started" className="font-sans justify-self-end border rounded-xl border-solid border-white px-4 py-3 font-bold">
+        View docs 
+      </a>
+    </div>
+
+  </div>
+</div>
+
+<main className="max-w-screen-xl mx-auto vp-doc relative px-0 mb-[26px] mt-0 md:mb-[64px]">
+  <hr className="md:mb-16 md:mt-32" />
+
+{' '}
+
+<section>
+  <main className="flex flex-col gap-4 md:flex-row">
+    <h2 className="basis-1/2 py-10 text-4xl md:text-6xl">Components</h2>
+  </main>
+  <aside className="md:px-2">
+    <p className="text-lg md:text-xl py-4">
+      Display ENS [avatars](/identity/avatar), Attestation [badges](/identity/badge), ENS [names](/identity/name) and account [addresses](/identity/address).
+    </p>
+    <div className="flex grow flex-col md:flex-row">
+      <div>
+
+```tsx
+<Identity
+  address="0x838aD0EAE54F99F1926dA7C3b6bFbF617389B4D9"
+  schemaId="0xf8b05c79f090979bf4a80270aba232dff11a10d9ca55c4f88de95317970f0de9"
+>
+  <Avatar>
+    <Badge />
+  </Avatar>
+  <Name />
+  <Address />
+</Identity>
+```
+
+    </div>
+    <div className='flex grow items-center justify-center h-24 md:h-auto'>
+      <App>
+        <Identity
+          schemaId="0xf8b05c79f090979bf4a80270aba232dff11a10d9ca55c4f88de95317970f0de9"
+          address="0x838aD0EAE54F99F1926dA7C3b6bFbF617389B4D9"
+        >
+          <Avatar>
+            <Badge />
+          </Avatar>
+          <Name />
+          <Address />
+        </Identity>
+      </App>
+      </div>
+    </div>
+  </aside>
+  <aside className="md:px-2 pt-10">
+    <p className="text-lg md:text-xl py-4">
+      Create or connect your wallet with [Connect Account](/wallet/connect-account), powered by [Smart Wallet](https://www.smartwallet.dev/why).
+    </p>
+    <div className="flex grow flex-col md:flex-row">
+      <div>
+```tsx
+<div className="flex flex-grow">
+  {(() => {
+    if (status === 'disconnected') {
+      return <ConnectAccount />; // [!code focus]
+    }
+    return (
+      <div className="flex h-8 w-8 items-center justify-center">
+        <button type="button" onClick={() => disconnect()}>
+          <Avatar address={address} />
+        </button>
+      </div>
+    );
+  })()}
+</div>
+```
+      </div>
+      <div className='flex grow items-center justify-center h-24 md:h-auto'>
+<App>
+  <AccountConnect />
+</App>
+      </div>
+    </div>
+  </aside>
+  <aside className="md:px-2 pt-10">
+    <p className="text-lg md:text-xl py-4">
+      Search [Tokens](/token/types#token) using [getTokens](/token/get-tokens) and display them with [TokenSearch](/token/token-search), [TokenChip](/token/token-chip), and [TokenRow](/token/token-row).
+    </p>
+    <div className="flex grow flex-col md:flex-row">
+      <div>
+```tsx
+const [filteredTokens, setFilteredTokens] = useState<Token[]>([]);
+...
+
+const tokens: Token[] = await getTokens({ search: value }); // [!code focus]
+setFilteredTokens(filteredTokens);
+...
+
+<div className="flex flex-col gap-4 rounded-3xl bg-white p-4">
+  <TokenSearch onChange={handleChange} delayMs={200} /> // [!code focus]
+  {filteredTokens.length > 0 && (
+    <div className="flex gap-2">
+      {filteredTokens.map((token) => (
+        <TokenChip key={token.name} token={token} onClick={handleSelect} /> // [!code focus]
+      ))}
+    </div>
+  )}
+  {filteredTokens.length > 0 ? (
+    <div>
+      <div className="text-body text-black">Tokens</div>
+      <div>
+        {filteredTokens.map((token) => (
+          <TokenRow key={token.name} token={token} onClick={handleSelect} /> // [!code focus]
+        ))}
+      </div>
+    </div>
+  ) : (
+    <div className="text-body text-black">No tokens found</div>
+  )}
+</div>
+```
+      </div>
+      <div className='flex grow items-center justify-center h-auto p-6'>
+<App>
+  <TokenSelector />
+</App>
+      </div>
+    </div>
+  </aside>
+</section>
+
+{' '}
+
+<hr className="my-8 md:my-20" />
+
+<section>
+  <main className="flex flex-row gap-1">
+    <h2 className="basis-1/2 text-4xl md:text-6xl">Utilities</h2>
+  </main>
+  <p className="py-2 text-lg md:text-xl">
+    If you're seeking basic TypeScript utilities, we have plenty of ready-to-use
+    options available.
+  </p>
+  <aside className="flex flex-col gap-10 pt-8 md:flex-row md:px-2">
+    <ul>
+      <li>
+        <h3>Frames</h3>
+      </li>
+      <li>[getFrameHtmlResponse](/frame/get-frame-html-response)</li>
+      <li>[getFrameMessage](/frame/get-frame-message)</li>
+      <li>[getFrameMetadata](/frame/get-frame-metadata)</li>
+    </ul>
+    <ul>
+      <li>
+        <h3>Identity</h3>
+      </li>
+      <li>[getAvatar](/identity/get-avatar)</li>
+      <li>[getAttestations](/identity/get-attestations)</li>
+      <li>[getName](/identity/get-name)</li>
+      <li>[useName](/identity/use-name)</li>
+      <li>[useAvatar](/identity/use-avatar)</li>
+    </ul>
+    <ul>
+      <li>
+        <h3>Token</h3>
+      </li>
+      <li>[formatAmount](/token/format-amount)</li>
+      <li>[getTokens](/token/get-tokens)</li>
+    </ul>
+    <ul>
+      <li>
+        <h3>Wallet</h3>
+      </li>
+      <li>[isValidAAEntrypoint](/wallet/is-valid-aa-entrypoint)</li>
+      <li>
+        [isWalletACoinbaseSmartWallet](/wallet/is-wallet-a-coinbase-smart-wallet)
+      </li>
+    </ul>
+    <ul>
+      <li>
+        <h3>Farcaster</h3>
+      </li>
+      <li>[getFarcasterUserAddress](/farcaster/get-farcaster-user-address)</li>
+    </ul>
+    <ul>
+      <li>
+        <h3>XMTP</h3>
+      </li>
+      <li>[getXmtpFrameMessage](/xmtp/get-xmtp-frame-message)</li>
+      <li>[isXmtpFrameRequest](/xmtp/is-xmtp-frame-request)</li>
+    </ul>
+  </aside>
+</section>
+
+{' '}
+
+<hr className="my-8 md:my-20" />
+
+<section>
+  <main className="flex flex-col gap-4 md:flex-row">
+    <h2 className="basis-1/2 text-4xl md:text-6xl">Design</h2>
+  </main>
+  <p className="py-2 text-lg md:text-xl">
+    All our component designs are open-sourced. You can access the [Figma
+    file](https://www.figma.com/community/file/1370194397345450683) to use them
+    for your onchain project.
+  </p>
+  <aside className="flex flex-col pt-10 md:flex-row md:px-2">
+    <div>
+      <a href="https://www.figma.com/community/file/1370194397345450683" target="_blank">
+        <p>Figma - How to use</p>
+        <img
+          alt="OnchainKit logo vibes"
+          src="https://onchainkit.xyz/assets/onchainkit-figma-design-how-to-use.png"
+          width="auto"
+        />
+      </a>
+    </div>
+    <div>
+      <a href="https://www.figma.com/community/file/1370194397345450683" target="_blank">
+        <p>Figma - Components</p>
+        <img
+          alt="OnchainKit logo vibes"
+          src="https://onchainkit.xyz/assets/onchainkit-figma-design-components.png"
+          width="auto"
+        />
+      </a>
+    </div>
+  </aside>
+</section>
+
+{' '}
+
+<hr className="my-8 md:my-20" />
+
+<section>
+  <main className="flex flex-col gap-4 md:flex-row">
+    <h2 className="basis-1/2 py-10 text-4xl md:text-6xl">See how it works</h2>
+  </main>
+  <aside className="md:px-48">
+    <div className="relative w-full pt-[56.25%]">
+      <iframe
+        src="https://www.youtube.com/embed/YwlfgIJK0j8"
+        width="100%"
+        height="100%"
+        className="absolute inset-0"
+      ></iframe>
+    </div>
+  </aside>
+</section>
+
+{' '}
+
+<hr className="my-8 md:my-20" />
+
+<section>
+  <main className="flex flex-col gap-4 md:flex-row">
+    <h2 className="basis-1/2 text-4xl md:text-6xl">
+      Helping builders ship faster
+    </h2>
+  </main>
+  <div className="overflow-x-scroll">
+    <div className="flex flex-col gap-4 py-10 md:flex-row">
+      <FarcasterCastCard castUrl="https://warpcast.com/edatweets/0xda341d80" />
+      <FarcasterCastCard castUrl="https://warpcast.com/samuellhuber/0xc036074d" />
+      <div className="hidden md:inline-block">
+        <FarcasterCastCard castUrl="https://warpcast.com/rish/0x3d28ce25" />
+      </div>
+    </div>
+  </div>
+</section>
+
+<hr className="my-8 md:my-20" />
+
+  <footer className="flex flex-col justify-center space-y-[25px]">
+    <div className="flex max-w-[1400px] flex-col justify-between xl:flex-row xl:space-x-[25px]">
+      <div className="space-y-[20px] xl:space-y-[40px]">
+        <h2 className="text-4xl md:text-9xl">OnchainKit</h2>
+      </div>
+      <div className="flex flex-row items-center space-x-[128px]">
+        <ul className="flex space-x-[28px]">
+          <li>[Getting Started](/getting-started)</li>
+          <li>[Warpcast](https://warpcast.com/~/channel/onchainkit)</li>
+          <li>[GitHub](https://github.com/coinbase/onchainkit)</li>
+        </ul>
+      </div>
+    </div>
+    <div className="text-[16px] leading-5 leading-[16px] xl:text-[20px] xl:leading-[20px]">
+      This project is licensed under the MIT License - see the
+      [LICENSE.md](https://github.com/coinbase/onchainkit/blob/main/LICENSE.md) file for details.
+    </div>
+  </footer>
+</main>
