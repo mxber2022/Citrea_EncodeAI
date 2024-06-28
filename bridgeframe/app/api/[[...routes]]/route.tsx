@@ -5,18 +5,36 @@ import { devtools } from 'frog/dev'
 // import { neynar } from 'frog/hubs'
 import { handle } from 'frog/next'
 import { serveStatic } from 'frog/serve-static'
+import { parseEther } from 'frog'
+
+const abi = [ 
+  {
+    "inputs": [
+      {
+        "internalType": "address",
+        "name": "to",
+        "type": "address"
+      },
+      {
+        "internalType": "string",
+        "name": "uri",
+        "type": "string"
+      }
+    ],
+    "name": "safeMint",
+    "outputs": [],
+    "stateMutability": "nonpayable",
+    "type": "function"
+  }
+]
 
 //@ts-ignore
-
 const app = new Frog({
   assetsPath: '/',
   basePath: '/api',
   // Supply a Hub to enable frame verification.
   // hub: neynar({ apiKey: 'NEYNAR_FROG_FM' })
 })
-
-// Uncomment to use Edge Runtime
-// export const runtime = 'edge'
 
 app.frame('/', (c) => {
   const { buttonValue, inputText, status } = c
@@ -28,7 +46,7 @@ app.frame('/', (c) => {
     intents: [
       <TextInput placeholder="Enter custom prompt..." />,
       <Button value="Generate">Generate</Button>,
-      <Button value="Mint">Mint</Button>,
+      // <Button value="Mint">Mint</Button>,
     ],
   })
 })
@@ -47,16 +65,26 @@ app.frame('/picker', (c) => {
       imageAspectRatio: '1:1',
       intents: [
         <TextInput placeholder="Enter custom prompt..." />,
-        <Button value="Generate">Generate</Button>,
+        <Button value="Generate">ReGenerate</Button>,
         <Button value="Mint">Mint</Button>,
+        // <Button.Transaction target="/mint">Mint</Button.Transaction>,
       ],
     })
   }
 
   if(buttonValue == "Mint") {
-    
+    /* 
+      Mint NFT via API
+    */
+    return c.res({
+      image: "http://localhost:3000/minted.jpg",
+      imageAspectRatio: '1:1',
+      intents: [
+        <TextInput placeholder="Enter custom prompt..." />,
+        <Button value="Generate">ReGenerate</Button>,
+      ],
+    })
   }
-
 
   return c.res({
     action: "/picker",
@@ -66,6 +94,21 @@ app.frame('/picker', (c) => {
       <Button value="Generate">Generate</Button>,
       <Button value="Mint">Mint</Button>,
     ],
+  })
+})
+
+app.transaction('/mint', (c) => {
+  const { inputText } = c
+  // Contract transaction response.
+  return c.contract({
+    abi,
+    functionName: 'mint',
+    //@ts-ignore
+    args: [69420n],
+    chainId: 'eip155:10',
+    to: '0xd2135CfB216b74109775236E36d4b433F1DF507B',
+    //@ts-ignore
+    value: parseEther(inputText)
   })
 })
 
