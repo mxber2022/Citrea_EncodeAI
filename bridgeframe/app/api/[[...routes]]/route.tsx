@@ -144,17 +144,15 @@ async function mint(walletAddressToMint: any) {
   console.log('Current nonce:', nonce);
   console.log(Wallet.address);
   
-  const payload = await CONTRACT.safeMint.populateTransaction(walletAddressToMint ,"https://github.com/mxber2022/BNB-Hackathon-Istanbul/blob/main/Assets/Sentinel_logo.png" );
+  const payload = await CONTRACT.safeMint.populateTransaction(walletAddressToMint ,"https://github.com/mxber2022/Citrea_EncodeAI/blob/main/bridgeframe/public/cat.jpg" );
   const tx = {
     ...payload,
-    nonce: nonce++,
-    gasPrice:50000000000, 
+    nonce: 4,
+    gasPrice:500000, 
     gasLimit: 1000000
   };
   const txResponse = await Wallet.sendTransaction(tx);
   console.log('Transaction hash:', txResponse.hash);
-  const receipt = await txResponse.wait();
-  console.log('Transaction receipt:', receipt);
 }
 
 async function generateAI(inputText: any) {
@@ -181,7 +179,7 @@ async function generateAI(inputText: any) {
   catch (error) {
    // console.error('Error generating image:', error);
 
-    return "https://azure-worried-landfowl-942.mypinata.cloud/ipfs/QmVj3zPGA4EUNgMWSA1yzmBHCtnd7R4crBVUex5vQRLurm/TechWhiteboard-min.jpg";
+    return "https://lavender-accused-lynx-424.mypinata.cloud/ipfs/QmZE41ttQvReF3L7NZqna77mK6SqcXLUEFobAjJieVVyeZ";
   }
   
 
