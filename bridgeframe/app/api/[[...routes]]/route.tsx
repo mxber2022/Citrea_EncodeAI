@@ -42,11 +42,18 @@ const app = new Frog({
 
 app.frame('/', (c) => {
   const { buttonValue, inputText, status } = c
-  const fruit = inputText || buttonValue
-
+  
   return c.res({
     action: "/picker",
-    image: "",
+    image: (
+      <div style={{ color: 'black', display: 'flex', fontSize: 60 , background: '#f6f6f6',width: '100%',
+        height: '100%', flexDirection: 'column',
+       
+        alignItems: 'center',
+        position: 'relative',}}>
+        Mint Generative Art!
+      </div>
+    ),
     intents: [
       <TextInput placeholder="Enter custom prompt..." />,
       <Button value="Generate">Generate</Button>,
@@ -71,25 +78,43 @@ app.frame('/picker', async (c) => {
       image: `${imageGenerated}`,
       imageAspectRatio: '1:1',
       intents: [
-        <TextInput placeholder="Enter custom prompt..." />,
-        <Button value="Generate">ReGenerate</Button>,
+        <TextInput placeholder="Enter Wallet Address..." />,
+       // <Button value="Generate">ReGenerate</Button>,
         <Button value="Mint">Mint</Button>,
         // <Button.Transaction target="/mint">Mint</Button.Transaction>,
       ],
     })
   }
 
+  if(buttonValue == "ReGenerate") {
+    /* 
+      ReGernerate AI Generative Art 
+    */
+    
+      return c.res({
+        action: "/picker",
+        image: "",
+        intents: [
+          <TextInput placeholder="Enter custom prompt..." />,
+          <Button value="Generate">Generate</Button>,
+          // <Button value="Mint">Mint</Button>,
+        ],
+      })
+  }
+
   if(buttonValue == "Mint") {
     /* 
       Mint NFT via API
     */
-    await mint();
+    console.log(inputText);
+    const walletAddressToMint = inputText;
+    await mint(walletAddressToMint);
     return c.res({
       image: "http://localhost:3000/minted.jpg",
       imageAspectRatio: '1:1',
       intents: [
         <TextInput placeholder="Enter custom prompt..." />,
-        <Button value="Generate">ReGenerate</Button>,
+        <Button value="ReGenerate">ReGenerate</Button>,
       ],
     })
   }
@@ -105,16 +130,28 @@ app.frame('/picker', async (c) => {
   })
 })
 
-async function mint() {
+async function mint(walletAddressToMint: any) {
   console.log("hello mint initiating")
+  console.log("walletAddressToMint: ", walletAddressToMint);
   const CONTRACT_ADDRESS = "0xAaa906c8C2720c50B69a5Ba54B44253Ea1001C98";
   const provider = new ethers.JsonRpcProvider("https://rpc.devnet.citrea.xyz");
   let CONTRACT = new ethers.Contract(CONTRACT_ADDRESS, abi, provider);
   //@ts-ignore
   const Wallet = new ethers.Wallet(process.env.PRIVATE_KEY, provider);
-  const payload = await CONTRACT.safeMint.populateTransaction("0x7199D548f1B30EA083Fe668202fd5E621241CC89","https://github.com/mxber2022/BNB-Hackathon-Istanbul/blob/main/Assets/Sentinel_logo.png" );
-  //const signedTx = await Wallet.signTransaction(payload);
-  const txResponse = await Wallet.sendTransaction(payload);
+
+
+  let nonce = await provider.getTransactionCount("0xAaa906c8C2720c50B69a5Ba54B44253Ea1001C98");
+  console.log('Current nonce:', nonce);
+  console.log(Wallet.address);
+  
+  const payload = await CONTRACT.safeMint.populateTransaction(walletAddressToMint ,"https://github.com/mxber2022/BNB-Hackathon-Istanbul/blob/main/Assets/Sentinel_logo.png" );
+  const tx = {
+    ...payload,
+    nonce: nonce++,
+    gasPrice:50000000000, 
+    gasLimit: 1000000
+  };
+  const txResponse = await Wallet.sendTransaction(tx);
   console.log('Transaction hash:', txResponse.hash);
   const receipt = await txResponse.wait();
   console.log('Transaction receipt:', receipt);
