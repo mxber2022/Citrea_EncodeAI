@@ -73,7 +73,7 @@ app.frame('/picker', async (c) => {
     */
     const imageGenerated = await generateAI(inputText);
     //"https://azure-worried-landfowl-942.mypinata.cloud/ipfs/QmVj3zPGA4EUNgMWSA1yzmBHCtnd7R4crBVUex5vQRLurm/Frame_outline-min.jpg"
-
+    
     return c.res({
       image: `${imageGenerated}`,
       imageAspectRatio: '1:1',
