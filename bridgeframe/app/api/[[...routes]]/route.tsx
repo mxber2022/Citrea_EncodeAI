@@ -64,7 +64,7 @@ app.frame('/picker', async (c) => {
     /* 
       Gernerate AI Generative Art 
     */
-    const imageGenerated = await generateAI();
+    const imageGenerated = await generateAI(inputText);
     //"https://azure-worried-landfowl-942.mypinata.cloud/ipfs/QmVj3zPGA4EUNgMWSA1yzmBHCtnd7R4crBVUex5vQRLurm/Frame_outline-min.jpg"
 
     return c.res({
@@ -120,14 +120,14 @@ async function mint() {
   console.log('Transaction receipt:', receipt);
 }
 
-async function generateAI() {
+async function generateAI(inputText: any) {
   const OPENAI_API_KEY = process.env.OPENAI_KEY;
-  
+  console.log("inputText: ", inputText);
   try {
     const response = await axios.post(
       'https://api.openai.com/v1/images/generations',
       {
-        prompt: "a car",
+        prompt: inputText,
         n: 1,
         size: '256x256',
       },
