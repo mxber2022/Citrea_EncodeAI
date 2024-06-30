@@ -1,6 +1,6 @@
 # AiCitrea
  
-Farcaster Frame to generative art and mint on Citrea Blockchain.
+Farcaster Frame to generate generative art and mint this art on Citrea Blockchain.
 
 Contract Address: 0xAaa906c8C2720c50B69a5Ba54B44253Ea1001C98
 
